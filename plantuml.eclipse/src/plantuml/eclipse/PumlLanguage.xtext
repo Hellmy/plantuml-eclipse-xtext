@@ -1,0 +1,203 @@
+grammar plantuml.eclipse.Puml hidden(WS, NEWLINE, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate puml "http://www.eclipse.plantuml/Puml"
+
+UmlDiagram:
+	{UmlDiagram}
+	('SEQUENCE'
+	umlDiagrams+=SequenceUml* 
+	|
+	'COMPONENT'
+	umlDiagrams+=ComponentUml*);
+
+UmlElementsContainer:
+	{UmlElementsContainer}
+	umlElements+=(UmlElement)*;
+
+NamedElement:
+	{NamedElement}
+	name=ID;
+
+UmlUse:
+	{UmlUse};
+
+
+SequenceUml:
+	{SequenceUml}
+	'@startuml'
+	umlElements+=(UmlElement)*
+	'@enduml';
+
+ComponentUml:
+	{ComponentUml}
+	'@startuml'
+	umlElements+=(ComponentElement)*
+	'@enduml';
+
+QualifiedName:
+	{QualifiedName}
+	ID;
+
+ComponentElement:
+	Component
+	| Interface
+	| Link;
+
+Link:
+	linkOne=[NamedElement|ID] ('-' | '<-' | '.' | '<.') (ID | '[' COLOR_TAG ']')* ('-' | '.' | '->' | '.>') linkTwo=[NamedElement|ID] (':'
+	text+=(ID)*)?;
+
+Interface returns NamedElement:
+	{Interface} ('()' | 'INTERFACE') description=STRING ('AS' name=ID)? (color=COLOR_TAG)?;
+
+Component returns NamedElement:
+	{Component} '[' name=ID nameExtension+=(ID)* ']' ('AS' name=ID)? (color=COLOR_TAG)?;
+
+UmlElement:
+	Participant
+	| UseLeft
+	| UseRight
+	| Skinparam
+	| Box
+	| Group
+	| Activate
+	| Alternative
+	| Autonumber
+	| Legend
+	| Title
+	| Newpage
+	| Note
+	| Divider
+	| Reference
+	| Delay
+	| Space
+	//| QualifiedName
+;
+
+Space:
+	{Space}
+	('||' value=ID '||' | '|||');
+
+Delay:
+	{Delay}
+	'...' value+=(ID)* '...';
+
+Reference:
+	{Reference}
+	'REF OVER' ref+=[Participant|ID] (',' ref+=[Participant|ID])*
+	(':' value+=(ID)* | value+=(ID)* 'END REF');
+
+Divider:
+	{Divider}
+	'==' name=ID value+=(ID)* '==';
+
+Note:
+	{Note}
+	'NOTE' ('LEFT' | 'RIGHT' | 'OVER') ('OF' noteOf=[Participant|ID])?
+	value+=(ID)*
+	'END NOTE';
+
+Newpage:
+	{Newpage}
+	'NEWPAGE' value+=(ID | STRING)*;
+
+Title:
+	{Title}
+	'TITLE' value+=(ID | STRING)*;
+
+Legend:
+	{Legend}
+	'LEGEND'
+	legendEntries+=(STRING | ID | '=' | ':')*
+	'ENDLEGEND';
+
+LegendEntries:
+	name=ID '=' value+=(ID | STRING)*;
+
+Autonumber:
+	'AUTONUMBER' (value=(ID | STRING))?;
+
+Activate returns UmlElementsContainer:
+	{Activate}
+	'ACTIVATE' activate=[Participant]
+	umlElements+=(UmlElement)*
+	('DEACTIVATE' | 'DESTROY') deactivate=[Participant];
+
+Alternative returns UmlElementsContainer:
+	{Alternative}
+	'ALT' text+=(ID)*
+	umlElements+=(UmlElement)*
+	elseBlocks+=(Else)*
+	=> 'END';
+
+Else returns UmlElementsContainer:
+	{Else}
+	'ELSE' text+=(ID)*
+	umlElements+=(UmlElement)*;
+
+Group returns UmlElementsContainer:
+	{Group}
+	('GROUP' | 'OPT' | 'LOOP' | 'PAR' | 'BREAK' | 'CRITICAL') test+=(ID)*
+	umlElements+=(UmlElement)*
+	=> 'END';
+
+Box returns UmlElementsContainer:
+	{Box}
+	'BOX' name=STRING (color=COLOR_TAG)?
+	umlElements+=(UmlElement)*
+	=> 'END BOX';
+
+Skinparam:
+	{Skinparam}
+	'SKINPARAM SEQUENCE{'
+	skinElements+=(SkinElement)*
+	'}';
+
+SkinElement:
+	name=ID value=(ID | COLOR_TAG);
+
+UseLeft returns UmlUse:
+	{UseLeft}
+	(userOne=[Participant|ID] | '[') ('o<-' | '<-o' | 'o<-o' | '<-' | 'o<--' | '<--o' | 'o<--o' | '<--' | 'x<-' | '<-x' |
+	'x<-x' | 'x<--' | '<--x' | 'x<--x') userTwo=[Participant|ID] (':' text+=(ID)*)?;
+
+UseRight returns UmlUse:
+	{UseRight}
+	(userOne=[Participant|ID]) ('o->' | '->o' | 'o->o' | '->' | 'o-->' | '-->o' | 'o-->o' | '-->' | 'x->' | '->x' |
+	'x->x' | 'x-->' | '-->x' | 'x-->x') (userTwo=[Participant|ID] | ']') (':' text+=(ID)*)?;
+
+Participant:
+	{Participant}
+	// TODO das Problem liegt am Konflikt in den Namen --> Daher hat xtext auch bei der ID den ^ als Konfliktvermeider
+	// google: xtext keyword contextual
+	// https://kthoms.wordpress.com/2012/03/15/xtext-content-assist-escape-identifiers-conflicting-with-keywords/#comments
+	//	'participant ' (name=TEXT | longname=(STRING | TEXT) ' as ' name=TEXT) NEWLINE
+	//	'participant ' {UmlParticipant} name=(TEXT|STRING) ('as ' name=TEXT)? NEWLINE
+	('PARTICIPANT' | 'ACTOR' | 'BOUNDARY' | 'CONTROL' | 'ENTITY' | 'DATABASE') (name=ID | longname=(STRING | ID) 'AS'
+	name=ID);
+
+terminal STRING:
+	'"' ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | '"'))* '"' 
+//	| "'" ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | "'"))* "'"
+;
+
+terminal WS:
+	' ' | '\t';
+
+terminal NEWLINE:
+	'\r'? '\n';
+
+terminal ID:
+	('a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')') ('a'..'z' |
+	'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')')*;
+
+	//terminal HTML:
+//	('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\"\"'|'-'|'~'|'*'|'//') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\"\"'|'-'|'~'|'*'|'//')*
+//;
+terminal COLOR_TAG:
+	'#' ('a'..'z' | 'A'..'Z' | '0'..'9')*;
+
+terminal SL_COMMENT:
+	"'" !('\n' | '\r')* ('\r'? '\n')?;
+

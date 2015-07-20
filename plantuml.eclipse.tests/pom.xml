@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../plantuml.eclipse.releng/pom.xml</relativePath>
+		<groupId>plantuml.eclipse</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>plantuml.eclipse.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<name>Plantuml Eclipse Language Tests</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>gen-clean</id>
+						<phase>clean</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<forkMode>always</forkMode>
+					<useUIHarness>false</useUIHarness>
+					<useUIThread>false</useUIThread>
+					<argLine>-Xss288k -Xmx64m -XX:MaxPermSize=64m</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

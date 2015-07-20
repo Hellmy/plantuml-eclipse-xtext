@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/plantuml.eclipse.sdk_0.0.0.jar" id="plantuml.eclipse.sdk" version="0.0.0">
+      <category name="plantuml.eclipse"/>
+   </feature>
+   <category-def name="plantuml.eclipse" label="Plantuml Eclipse Language"/>
+</site>
