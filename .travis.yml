@@ -1,0 +1,4 @@
+language: java
+script:
+	cd plantuml.eclipse.releng/
+	mvn clean install
