@@ -2,3 +2,6 @@ language: java
 script:
 - cd plantuml.eclipse.releng/
 - mvn clean install
+
+deploy:
+- skip_cleanup: true
