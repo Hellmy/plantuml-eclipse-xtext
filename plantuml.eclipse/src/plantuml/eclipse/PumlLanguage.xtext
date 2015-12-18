@@ -42,18 +42,9 @@ QualifiedName:
 ComponentElement:
 	Component
 	| Interface
-	| Link;
-
-Link:
-	linkOne=[NamedElement|ID] ('-' | '<-' | '.' | '<.') (ID | '[' COLOR_TAG ']')* ('-' | '.' | '->' | '.>') linkTwo=[NamedElement|ID] (':'
-	text+=(ID)*)?;
-
-Interface returns NamedElement:
-	{Interface} ('()' | 'INTERFACE') description=STRING ('AS' name=ID)? (color=COLOR_TAG)?;
-
-Component returns NamedElement:
-	{Component} '[' name=ID nameExtension+=(ID)* ']' ('AS' name=ID)? (color=COLOR_TAG)?;
-
+	| Link
+	| Title;
+	
 UmlElement:
 	Participant
 	| UseLeft
@@ -74,6 +65,16 @@ UmlElement:
 	| Space
 	//| QualifiedName
 ;
+	
+Link:
+	linkOne=[NamedElement|ID] ('-' | '<-' | '.' | '<.') (ID | '[' COLOR_TAG ']')* ('-' | '.' | '->' | '.>') linkTwo=[NamedElement|ID] (':'
+	text+=(ID)*)?;
+
+Interface returns NamedElement:
+	{Interface} ('()' | 'INTERFACE') description=STRING ('AS' name=ID)? (color=COLOR_TAG)?;
+
+Component returns NamedElement:
+	{Component} '[' name=ID nameExtension+=(ID)* ']' ('AS' name=ID)? (color=COLOR_TAG)?;
 
 Space:
 	{Space}
@@ -190,7 +191,7 @@ terminal NEWLINE:
 
 terminal ID:
 	('a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')') ('a'..'z' |
-	'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')')*;
+	'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')' | ':' | '.' | ',')*;
 
 	//terminal HTML:
 //	('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\"\"'|'-'|'~'|'*'|'//') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\"\"'|'-'|'~'|'*'|'//')*
