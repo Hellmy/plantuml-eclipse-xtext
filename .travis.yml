@@ -3,6 +3,10 @@ script:
 - cd plantuml.eclipse.releng/
 - mvn clean install
 - cd ..
+cache:
+  bundler: true
+  directories:
+  - plantuml.eclipse.updatesite/target
 deploy:
   provider: releases
   api_key:
