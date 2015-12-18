@@ -7,6 +7,6 @@ deploy:
   api_key:
     secure: rjhdO9XkqYIu0TUkWjJVSNF9D82+y8j7EJ2knCX4ZHL4cuZeSJnxJEdpAxIFw+oGrUU/F66CuZJcI2Xj/9dEZWgZG7NJ6N40zODL3Rkt/TiIiyHCpbB+se23E7jKOviUvvsJopelJdFJf4h66RWWe3sS/dck9Dw3ZxTrcr8Udw0Pfhcxa5/y9MfvR+cNx536PSr2E9AzkpBQIABlcHUTI0xlWGXaVsFYfhqP5u5wgK0j+O3ifj/rnn0vyE/BofVOZli18C1r/qLi3gSnxp1eIDAAi5XZTCvusbATwHhwc99gGx3tKW0VoFHpiMHTT6neOfKSfntMyHOcxh496VQq+LjAGDDUhVA7fmfXp0NOVOeWPRSbGjY/1hTsp9T81VuYpqgzjDHjZK/i4072eNe813YYqVWR9yVzQGekS46Qb2S0LEKuqWKd436iXa1ysrJzEFF8f6nxhEN3zQiNX6uhx8BNY/pmBzZn/C1JRViYLNdB9KO6emoaGWfevMiOpwKi0+lEluDFIZu1JMb7f/qjDp4fWd8dAOG8ckiczUb4BlbuBHx2XHt9gFFpy8HQ/cW8lUsf+XJeBELLjIf/yFpO1FcVpwIO7JngMqxXon0C1hbXMOLFS6Ml7DUtyANqs+J7QtrhSb/5opJNa/gkg/GBXIuptWi4kqMjz1lVcg0IcTY=
   file_glob: true
-  file: plantuml.eclipse.updatesite\target\plantuml.eclipse.updatesite*.zip
+  file: ../plantuml.eclipse.updatesite/target/plantuml.eclipse.updatesite*.zip
   on:
     repo: Hellmy/plantuml-eclipse-xtext
