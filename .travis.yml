@@ -2,6 +2,7 @@ language: java
 script:
 - cd plantuml.eclipse.releng/
 - mvn clean install
+- cd ..
 deploy:
   provider: releases
   api_key:
