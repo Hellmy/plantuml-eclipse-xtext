@@ -18,8 +18,14 @@ git config user.email "<you>@<your-email>"
 
 # The first and only commit to this new Git repo contains all the
 # files present with the commit message "Deploy to GitHub Pages".
-git add .
+git add -A *
+echo "add done"
 git commit -m "Deploy to GitHub Pages"
+echo "commit done"
+echo $GH_REF
+echo "${GH_REF}"
+echo "$GH_REF"
+echo "echo done"
 
 # Force push from the current repo's master branch to the remote
 # repo's gh-pages branch. (All previous history on the gh-pages branch
