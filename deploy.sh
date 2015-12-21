@@ -1,8 +1,6 @@
-#!/bin/bash
-set -e # exit with nonzero exit code if anything fails
+#!/bin/sh
 
 # clear and re-create the out directory
-#rm -rf out || exit 0;
 #mkdir out;
 
 # run our compile script, discussed above
@@ -10,6 +8,7 @@ set -e # exit with nonzero exit code if anything fails
 
 # go to the out directory and create a *new* Git repo
 #cd out
+cd "$TRAVIS_BUILD_DIR"
 cd plantuml.eclipse.updatesite\target
 git init
 
@@ -26,4 +25,4 @@ git commit -m "Deploy to GitHub Pages"
 # repo's gh-pages branch. (All previous history on the gh-pages branch
 # will be lost, since we are overwriting it.) We redirect any output to
 # /dev/null to hide any sensitive credential data that might otherwise be exposed.
-git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:gh-pages > /dev/null 2>&1
+git push --force --quiet "https://$GH_TOKEN@$GH_REF" master:gh-pages > /dev/null 2>&1
