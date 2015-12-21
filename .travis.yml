@@ -3,6 +3,7 @@ script:
 - cd plantuml.eclipse.releng/
 - mvn clean install
 - cd ..
+- ./deploy.sh
 cache:
   bundler: true
   directories:
@@ -17,8 +18,6 @@ deploy:
   on:
     repo: Hellmy/plantuml-eclipse-xtext
     tags: true
-after_success:
-  script: ./deploy.sh
 env:
   global:
     GH_REF: github.com/Hellmy/plantuml-eclipse-xtext_update.git
