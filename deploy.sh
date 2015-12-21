@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -e # exit with nonzero exit code if anything fails
 # clear and re-create the out directory
 #mkdir out;
 
@@ -9,7 +9,7 @@
 # go to the out directory and create a *new* Git repo
 #cd out
 cd "$TRAVIS_BUILD_DIR"
-cd plantuml.eclipse.updatesite\target
+cd plantuml.eclipse.updatesite/target
 git init
 
 # inside this git repo we'll pretend to be a new user
