@@ -6,19 +6,23 @@ import org.eclipse.xtext.junit4.XtextRunner
 import org.eclipse.xtext.junit4.util.ParseHelper
 import org.junit.Test
 import org.junit.runner.RunWith
-import plantuml.eclipse.PumlInjectorProvider
 import plantuml.eclipse.puml.Activate
 import plantuml.eclipse.puml.Alternative
 import plantuml.eclipse.puml.Box
+import plantuml.eclipse.puml.Component
+import plantuml.eclipse.puml.ComponentUml
 import plantuml.eclipse.puml.Delay
 import plantuml.eclipse.puml.Divider
 import plantuml.eclipse.puml.Else
 import plantuml.eclipse.puml.Group
+import plantuml.eclipse.puml.Interface
 import plantuml.eclipse.puml.Legend
+import plantuml.eclipse.puml.Link
 import plantuml.eclipse.puml.Newpage
 import plantuml.eclipse.puml.Note
 import plantuml.eclipse.puml.Participant
 import plantuml.eclipse.puml.Reference
+import plantuml.eclipse.puml.SequenceUml
 import plantuml.eclipse.puml.Space
 import plantuml.eclipse.puml.Title
 import plantuml.eclipse.puml.UmlDiagram
@@ -26,7 +30,6 @@ import plantuml.eclipse.puml.UseLeft
 import plantuml.eclipse.puml.UseRight
 
 import static org.junit.Assert.*
-import plantuml.eclipse.puml.SequenceUml
 
 @RunWith(XtextRunner)
 @InjectWith(PumlInjectorProvider)
@@ -370,5 +373,30 @@ class SimpleParsingTest {
 		assertEquals("lol", ((heros.umlDiagrams.head as SequenceUml).umlElements.get(6) as UseLeft).userTwo.name)
 		assertEquals("foo", ((heros.umlDiagrams.head as SequenceUml).umlElements.get(7) as UseLeft).userOne.name)
 		assertEquals("lol", ((heros.umlDiagrams.head as SequenceUml).umlElements.get(7) as UseLeft).userTwo.name)
+	}
+		@Test def void testComponent() {
+		val heros = '''
+			COMPONENT @startuml
+			[ABC] AS A
+			[DEF] AS B
+			(A KI) AS C			
+			A <-[#blue]- B : abch acd			
+			B -d- A : ?			
+			C -[#blue]r-> A : xyz			
+			@enduml
+		'''.parse
+		assertEquals("A", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(0) as Component).name)
+		assertEquals("KI)", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(2) as Interface).nameExtension.get(0))
+	
+		assertEquals("abch", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(3) as Link).text.get(0));
+		assertEquals(2, ((heros.umlDiagrams.head as ComponentUml).umlElements.get(3) as Link).text.length);
+		assertEquals("A", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(3) as Link).linkOne.name);
+		assertEquals("B", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(3) as Link).linkTwo.name);
+		
+		assertEquals("C", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(5) as Link).linkOne.name);
+		assertEquals("A", ((heros.umlDiagrams.head as ComponentUml).umlElements.get(5) as Link).linkTwo.name);
+		assertEquals(1, ((heros.umlDiagrams.head as ComponentUml).umlElements.get(5) as Link).text.length);
+		
+
 	}
 }
