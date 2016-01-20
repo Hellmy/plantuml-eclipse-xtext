@@ -67,14 +67,108 @@ UmlElement:
 ;
 	
 Link:
-	linkOne=[NamedElement|ID] ('-' | '<-' | '.' | '<.') (ID | '[' COLOR_TAG ']')* ('-' | '.' | '->' | '.>') linkTwo=[NamedElement|ID] (':'
-	text+=(ID)*)?;
+	linkOne=[NamedElement|ID] 
+	/**
+	 * Long list of possible clauses due to misunderstanding within the parser.
+	 * If you would split the detection into multiple ones this is not be detected in the right way.
+	 * Example: 
+	 * 		('<-' | '-') (d)? ('-' | '->')
+	 * does not work because if the parser is already in ID detection due to previous (':' text+=(ID)*)?
+	 * it is not possible to detect the upper clause for sure.
+	 */
+	('<-'
+		| '.'
+		| '<.'
+		| '-'
+		| '<->'
+		| '->'
+		| '<.>'
+		| '.>'
+		| '-d-'
+		| '<-d-'
+		| '<.d.'
+		| '.d.'
+		| '<-d->'
+		| '-d->'
+		| '<.d.>'
+		| '.d.>'
+		| '-r-'
+		| '<-r-'
+		| '<.r.'
+		| '.r.'
+		| '<-r->'
+		| '-r->'
+		| '<.r.>'
+		| '.r.>'
+		| '-u-'
+		| '<-u-'
+		| '<.u.'
+		| '.u.'
+		| '<-u->'
+		| '-u->'
+		| '<.u.>'
+		| '.u.>'
+		| '-l-'
+		| '<-l-'
+		| '<.l.'
+		| '.l.'
+		| '<-l->'
+		| '-l->'
+		| '<.l.>'
+		| '.l.>'
+		| '--'
+		| '<--'
+		| '<..'
+		| '<-->'
+		| '-->'
+		| '<..>'
+		| '..>'
+		| '-[' (color=COLOR_TAG) ']d-'
+		| '<-[' (color=COLOR_TAG) ']d-'
+		| '<.[' (color=COLOR_TAG) ']d.'
+		| '.[' (color=COLOR_TAG) ']d.'
+		| '<-[' (color=COLOR_TAG) ']d->'
+		| '-[' (color=COLOR_TAG) ']d->'
+		| '<.[' (color=COLOR_TAG) ']d.>'
+		| '.[' (color=COLOR_TAG) ']d.>'
+		| '-[' (color=COLOR_TAG) ']r-'
+		| '<-[' (color=COLOR_TAG) ']r-'
+		| '<.[' (color=COLOR_TAG) ']r.'
+		| '.[' (color=COLOR_TAG) ']r.'
+		| '<-[' (color=COLOR_TAG) ']r->'
+		| '-[' (color=COLOR_TAG) ']r->'
+		| '<.[' (color=COLOR_TAG) ']r.>'
+		| '.[' (color=COLOR_TAG) ']r.>'
+		| '-[' (color=COLOR_TAG) ']u-'
+		| '<-[' (color=COLOR_TAG) ']u-'
+		| '<.[' (color=COLOR_TAG) ']u.'
+		| '.[' (color=COLOR_TAG) ']u.'
+		| '<-[' (color=COLOR_TAG) ']u->'
+		| '-[' (color=COLOR_TAG) ']u->'
+		| '<.[' (color=COLOR_TAG) ']u.>'
+		| '-[' (color=COLOR_TAG) ']l-'
+		| '<-[' (color=COLOR_TAG) ']l-'
+		| '<.[' (color=COLOR_TAG) ']l.'
+		| '.[' (color=COLOR_TAG) ']l.'
+		| '<-[' (color=COLOR_TAG) ']l->'
+		| '-[' (color=COLOR_TAG) ']l->'
+		| '<.[' (color=COLOR_TAG) ']l.>'
+		| '.[' (color=COLOR_TAG) ']l.>'
+		| '-[' (color=COLOR_TAG) ']-'
+		| '<-[' (color=COLOR_TAG) ']-'
+		| '<.[' (color=COLOR_TAG) '].'
+		| '<-[' (color=COLOR_TAG) ']->'
+		| '-[' (color=COLOR_TAG) ']->'
+		| '<.[' (color=COLOR_TAG) '].>'
+		| '.[' (color=COLOR_TAG) '].>'	
+	) 
+	linkTwo=[NamedElement|ID] (':' text+=(ID)*)?;
 
 Interface returns NamedElement:
-	{Interface} ('()' | 'INTERFACE') description=STRING ('AS' name=ID)? (color=COLOR_TAG)?;
+	{Interface} ('(' name=ID nameExtension+=(ID)* ')' | 'INTERFACE' description=STRING) ('AS' name=ID)? (color=COLOR_TAG)?;
 
 Component returns NamedElement:
-	{Component} '[' name=ID nameExtension+=(ID)* ']' ('AS' name=ID)? (color=COLOR_TAG)?;
+	{Component} ('[' name=ID nameExtension+=(ID | WS)* ']' | 'COMPONENT' description=STRING) ('AS' name=ID)? (color=COLOR_TAG)?;
 
 Space:
 	{Space}
@@ -105,7 +199,7 @@ Newpage:
 
 Title:
 	{Title}
-	'TITLE' value+=(ID | STRING)*;
+	'TITLE' value+=(ID | STRING | WS)*;
 
 Legend:
 	{Legend}
@@ -190,7 +284,7 @@ terminal NEWLINE:
 	'\r'? '\n';
 
 terminal ID:
-	('a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')') ('a'..'z' |
+	('a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\') ('a'..'z' |
 	'A'..'Z' | '_' | '0'..'9' | '\"\"' | '-' | '~' | '*' | '//' | '<' | '>' | '\\' | '(' | ')' | ':' | '.' | ',')*;
 
 	//terminal HTML:
